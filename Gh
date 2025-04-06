@@ -1,0 +1,28 @@
+import cadquery as cq
+from cadquery import exporters
+
+# Kích thước
+length = 340  # mm
+width = 340
+height = 150
+
+cone_depth = 100  # mm
+cone_diameter = 150
+
+# Tạo khối hộp
+base = cq.Workplane("XY").box(length, width, height)
+
+# Tạo hình chóp ngược (hình nón cụt)
+cone = (
+    cq.Workplane("XY")
+    .workplane(offset=height)
+    .center(0, 0)
+    .cone(cone_depth, cone_diameter / 2, 0)
+    .translate((0, 0, height - cone_depth))
+)
+
+# Cắt hình chóp ra khỏi khối hộp
+final_model = base.cut(cone)
+
+# Xuất file STL
+exporters.export(final_model, "de_hop_chu_nhat_voi_chop_nguoc.stl")
